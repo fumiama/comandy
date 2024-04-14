@@ -19,3 +19,11 @@
 
 # Go workspace file
 go.work
+
+# Cgo files
+*.a
+*.h
+test
+
+# MacOS system files
+.DS_Store
