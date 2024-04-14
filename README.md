@@ -1,0 +1,2 @@
+# comandy
+/'kɒmænˌdaɪ/
