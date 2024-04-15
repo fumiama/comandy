@@ -12,7 +12,7 @@ TARGET_SDK := android23
 TARGET_ARCH := aarch64 # optional: armv7a i686 x86_64
 
 CGO_ENABLED := 1
-GO_SRC := $(shell find . -name '*.go')
+GO_SRC := $(shell find . -name '*.go' | grep -v '_test.go$$')
 NDK_TOOLCHAIN := ~/Library/Android/sdk/ndk/$(NDK_VERSION)/toolchains/llvm/prebuilt/$(BUILD_MACHINE)-$(BUILD_ARCH)
 CC := $(NDK_TOOLCHAIN)/bin/$(TARGET_ARCH)-linux-$(TARGET_SDK)-clang
 TEST_OUTPUT = '$(shell cd $(BUILD_PATH) && ./test | head -c 12)'

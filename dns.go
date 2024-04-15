@@ -48,14 +48,28 @@ func (ds *dnsservers) add(m map[string][]string) {
 func (ds *dnsservers) dial(ctx context.Context) (tlsConn *tls.Conn, err error) {
 	ds.RLock()
 	defer ds.RUnlock()
+
+	if dialer.Timeout != 0 {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, dialer.Timeout)
+		defer cancel()
+	}
+
+	if !dialer.Deadline.IsZero() {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithDeadline(ctx, dialer.Deadline)
+		defer cancel()
+	}
+
 	var conn net.Conn
 	for host, addrs := range ds.m {
 		for _, addr := range addrs {
 			if !addr.E {
 				continue
 			}
-			conn, err = net.Dial("tcp", addr.A)
+			conn, err = dialer.DialContext(ctx, "tcp", addr.A)
 			if err != nil {
+				addr.E = false // no need to acquire write lock
 				continue
 			}
 			tlsConn = terasu.Use(tls.Client(conn, &tls.Config{ServerName: host}))
@@ -63,6 +77,7 @@ func (ds *dnsservers) dial(ctx context.Context) (tlsConn *tls.Conn, err error) {
 			if err == nil {
 				return
 			}
+			_ = tlsConn.Close()
 			addr.E = false // no need to acquire write lock
 		}
 	}
@@ -129,7 +144,7 @@ var dotv4servers = dnsservers{
 
 var resolver = &net.Resolver{
 	PreferGo: true,
-	Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
+	Dial: func(ctx context.Context, _, _ string) (net.Conn, error) {
 		if canUseIPv6.Get() {
 			return dotv6servers.dial(ctx)
 		}

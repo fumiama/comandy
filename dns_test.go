@@ -16,7 +16,6 @@ func TestResolver(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(addrs)
-	t.Fail()
 }
 
 func TestDNS(t *testing.T) {

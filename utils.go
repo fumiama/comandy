@@ -14,12 +14,10 @@ type slice struct {
 	cap  int
 }
 
-/*
 // bytesToString 没有内存开销的转换
 func bytesToString(b []byte) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
-*/
 
 // stringToBytes 没有内存开销的转换
 func stringToBytes(s string) (b []byte) {
