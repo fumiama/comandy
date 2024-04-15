@@ -24,6 +24,7 @@ all:
 	@BUILD_PATH=$(BUILD_PATH)/i686 TARGET_ARCH=i686 GOARCH=amd64 $(MAKE) -e shared
 	@BUILD_PATH=$(BUILD_PATH)/x86_64 TARGET_ARCH=x86_64 GOARCH=386 $(MAKE) -e shared
 	rm -rf $(BUILD_PATH)/*/*.h
+	cd $(BUILD_PATH) && xz -z -9 -k aarch64/* armv7a/* i686/* x86_64/*
 	cd $(BUILD_PATH) && zip -r -9 $(BUILD_PATH).zip aarch64 armv7a i686 x86_64
 shared: $(GO_SRC) dir tidy
 	GOOS=$(GOOS) GOARCH=$(GOARCH) CGO_ENABLED=$(CGO_ENABLED) NDK_TOOLCHAIN=$(NDK_TOOLCHAIN) CC=$(CC) go build -buildmode=c-shared -o $(BUILD_PATH)/lib$(PROJECT_NAME).so $(GO_SRC)
@@ -44,4 +45,6 @@ clean:
 	@if [ -d "$(BUILD_PATH)" ]; then \
 		rm -rf $(BUILD_PATH)/lib$(PROJECT_NAME).*; \
 		rm -rf $(BUILD_PATH)/test; \
+		rm -rf $(BUILD_PATH)/*.zip; \
+		find $(BUILD_PATH) -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} \;; \
 	fi
