@@ -27,3 +27,6 @@ test
 
 # MacOS system files
 .DS_Store
+
+# Build result
+*.zip

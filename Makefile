@@ -9,16 +9,22 @@ BUILD_MACHINE := darwin
 BUILD_ARCH := x86_64
 NDK_VERSION := 26.3.11579264
 TARGET_SDK := android23
+TARGET_ARCH := aarch64 # optional: armv7a i686 x86_64
 
 CGO_ENABLED := 1
 GO_SRC := $(shell find . -name '*.go')
 NDK_TOOLCHAIN := ~/Library/Android/sdk/ndk/$(NDK_VERSION)/toolchains/llvm/prebuilt/$(BUILD_MACHINE)-$(BUILD_ARCH)
-CC := $(NDK_TOOLCHAIN)/bin/aarch64-linux-$(TARGET_SDK)-clang
+CC := $(NDK_TOOLCHAIN)/bin/$(TARGET_ARCH)-linux-$(TARGET_SDK)-clang
 TEST_OUTPUT = '$(shell cd $(BUILD_PATH) && ./test | head -c 12)'
 TEST_EXPECTED = '{"code":200,'
 
-all: shared
-
+all:
+	@BUILD_PATH=$(BUILD_PATH)/aarch64 TARGET_ARCH=aarch64 GOARCH=arm64 $(MAKE) -e shared
+	@BUILD_PATH=$(BUILD_PATH)/armv7a TARGET_ARCH=armv7a GOARCH=arm TARGET_SDK=androideabi23 $(MAKE) -e shared
+	@BUILD_PATH=$(BUILD_PATH)/i686 TARGET_ARCH=i686 GOARCH=amd64 $(MAKE) -e shared
+	@BUILD_PATH=$(BUILD_PATH)/x86_64 TARGET_ARCH=x86_64 GOARCH=386 $(MAKE) -e shared
+	rm -rf $(BUILD_PATH)/*/*.h
+	cd $(BUILD_PATH) && zip -r -9 $(BUILD_PATH).zip aarch64 armv7a i686 x86_64
 shared: $(GO_SRC) dir tidy
 	GOOS=$(GOOS) GOARCH=$(GOARCH) CGO_ENABLED=$(CGO_ENABLED) NDK_TOOLCHAIN=$(NDK_TOOLCHAIN) CC=$(CC) go build -buildmode=c-shared -o $(BUILD_PATH)/lib$(PROJECT_NAME).so $(GO_SRC)
 test: dir
