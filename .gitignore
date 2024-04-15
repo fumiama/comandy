@@ -31,3 +31,4 @@ test
 # Build result
 *.zip
 *.xz
+*.gz
