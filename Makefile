@@ -1,3 +1,6 @@
+# Tested under Apple M1.
+# Edit it if you use different platform.
+
 PROJECT_NAME := comandy
 BUILD_PATH := build
 GOOS := android
@@ -11,12 +14,12 @@ CGO_ENABLED := 1
 GO_SRC := $(shell find . -name '*.go')
 NDK_TOOLCHAIN := ~/Library/Android/sdk/ndk/$(NDK_VERSION)/toolchains/llvm/prebuilt/$(BUILD_MACHINE)-$(BUILD_ARCH)
 CC := $(NDK_TOOLCHAIN)/bin/aarch64-linux-$(TARGET_SDK)-clang
-TEST_OUTPUT = '$(shell cd $(BUILD_PATH) && ./test)'
-TEST_EXPECTED = '{"code":500,"data":"aW52YWxpZCB1cmwgJyc="}'
+TEST_OUTPUT = '$(shell cd $(BUILD_PATH) && ./test | head -c 12)'
+TEST_EXPECTED = '{"code":200,'
 
 all: shared
 
-shared: $(GO_SRC) dir
+shared: $(GO_SRC) dir tidy
 	GOOS=$(GOOS) GOARCH=$(GOARCH) CGO_ENABLED=$(CGO_ENABLED) NDK_TOOLCHAIN=$(NDK_TOOLCHAIN) CC=$(CC) go build -buildmode=c-shared -o $(BUILD_PATH)/lib$(PROJECT_NAME).so $(GO_SRC)
 test: dir
 	@GOOS=$(BUILD_MACHINE) CC=cc NDK_TOOLCHAIN="" $(MAKE) -e shared
@@ -27,7 +30,12 @@ runtest: test
 	else \
 		echo "test failed, expected:" $(TEST_EXPECTED) "but got:" $(TEST_OUTPUT); \
 	fi
+tidy:
+	go mod tidy
 dir:
 	@if [ ! -d "$(BUILD_PATH)" ]; then mkdir $(BUILD_PATH); fi
 clean:
-	@if [ -d "$(BUILD_PATH)" ]; then rm -rf $(BUILD_PATH)/lib$(PROJECT_NAME).*; fi
+	@if [ -d "$(BUILD_PATH)" ]; then \
+		rm -rf $(BUILD_PATH)/lib$(PROJECT_NAME).*; \
+		rm -rf $(BUILD_PATH)/test; \
+	fi

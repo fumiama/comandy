@@ -3,69 +3,46 @@ package main
 import "C"
 
 import (
-	"context"
-	"crypto/tls"
 	"encoding/base64"
 	"encoding/json"
 	"io"
-	"net"
 	"net/http"
 	"reflect"
 	"strings"
-	"time"
-
-	"github.com/fumiama/terasu"
 )
 
 func main() {}
 
-var dialer = net.Dialer{
-	Timeout: time.Minute,
+// para: json of map[host string][]addr:port string
+//
+//export add_dns
+func add_dns(para *C.char, is_ipv6 C.int) *C.char {
+	m := map[string][]string{}
+	err := json.Unmarshal(stringToBytes(C.GoString(para)), &m)
+	if err != nil {
+		return C.CString(err.Error())
+	}
+	if is_ipv6 != 0 {
+		if !canUseIPv6.Get() {
+			return C.CString("cannot use ipv6")
+		}
+		dotv6servers.add(m)
+		return nil
+	}
+	dotv4servers.add(m)
+	return nil
 }
 
-var cli = http.Client{
-	Transport: &http.Transport{
-		DialTLSContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
-			conn, err := dialer.DialContext(ctx, "tcp", addr)
-			if err != nil {
-				return nil, err
-			}
-			host, _, err := net.SplitHostPort(addr)
-			if err != nil {
-				return nil, err
-			}
-			return terasu.Use(tls.Client(conn, &tls.Config{
-				ServerName:         host,
-				InsecureSkipVerify: true,
-			})), nil
-		},
-	},
-}
-
-type capsule struct {
-	C int            `json:"code,omitempty"`
-	M string         `json:"method,omitempty"`
-	U string         `json:"url,omitempty"`
-	H map[string]any `json:"headers,omitempty"`
-	D string         `json:"data,omitempty"`
-}
-
-func (r *capsule) printerr(err error) string {
-	buf := strings.Builder{}
-	r.C = http.StatusInternalServerError
-	r.D = base64.StdEncoding.EncodeToString(stringToBytes(err.Error()))
-	_ = json.NewEncoder(&buf).Encode(r)
-	return buf.String()
-}
-
-func (r *capsule) printstrerr(err string) string {
-	buf := strings.Builder{}
-	r.C = http.StatusInternalServerError
-	r.D = base64.StdEncoding.EncodeToString(stringToBytes(err))
-	_ = json.NewEncoder(&buf).Encode(r)
-	return buf.String()
-}
-
+// para:
+//
+//	request("{\"method\":\"GET\","
+//		"\"url\":\"https://i.pximg.net/img-master/img/2012/04/04/21/24/46/26339586_p0_master1200.jpg\","
+//		"\"headers\":{"
+//			"\"Referer\":\"https://www.pixiv.net/\","
+//			"\"User-Agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0\""
+//		"}"
+//	"}");
+//
 //export request
 func request(para *C.char) *C.char {
 	r := capsule{}
@@ -73,13 +50,17 @@ func request(para *C.char) *C.char {
 	if err != nil {
 		return C.CString(r.printerr(err))
 	}
-	if r.U == "" || !strings.HasPrefix(r.U, "http") {
+	if r.U == "" || !strings.HasPrefix(r.U, "https://") {
 		return C.CString(r.printstrerr("invalid url '" + r.U + "'"))
 	}
 	if r.M != "GET" && r.M != "POST" && r.M != "DELETE" {
 		return C.CString(r.printstrerr("invalid method '" + r.U + "'"))
 	}
-	req, err := http.NewRequest(r.M, r.U, strings.NewReader(r.D))
+	var body io.Reader
+	if len(r.D) > 0 {
+		body = strings.NewReader(r.D)
+	}
+	req, err := http.NewRequest(r.M, r.U, body)
 	if err != nil {
 		return C.CString(r.printerr(err))
 	}
