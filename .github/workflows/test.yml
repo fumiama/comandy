@@ -39,7 +39,7 @@ jobs:
           BUILD_MACHINE: linux
         run: |
           echo NDK path is $NDK_HOME
-          ls $NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android23-clang --version
+          $NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android23-clang --version
           make -e
 
       - name: Build and Run Tests
