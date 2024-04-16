@@ -36,11 +36,12 @@ runtest:
 	@if [ ! -f "$(BUILD_PATH)/test" ]; then \
 		$(MAKE) -e test; \
 	fi
-	@TEST_OUTPUT=$$(cd $(BUILD_PATH) && ./test | head -c 12); \
+	TEST_OUTPUT=$$(cd $(BUILD_PATH) && ./test | head -c 12); \
 	if [ $$TEST_OUTPUT = $(TEST_EXPECTED) ]; then \
 		echo "test succeeded."; \
 	else \
 		echo "test failed, expected:" $(TEST_EXPECTED) "but got:" $$TEST_OUTPUT; \
+		exit 1; \
 	fi
 tidy:
 	go mod tidy
