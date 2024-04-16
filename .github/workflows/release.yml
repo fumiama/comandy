@@ -33,9 +33,6 @@ jobs:
       - name: Setup Go Environment
         uses: actions/setup-go@master
 
-      - name: Download Go Modules
-        run: go mod tidy
-
       - name: Cache Downloaded Modules
         uses: actions/cache@master
         with:
@@ -48,7 +45,9 @@ jobs:
         env:
           NDK_TOOLCHAIN: ${{ steps.setup-ndk.outputs.ndk-path }}
           BUILD_MACHINE: linux
-        run: make -e
+        run: |
+          echo NDK path is $NDK_TOOLCHAIN
+          make -e
 
       - name: Upload Binaries to Release
         uses: svenstaro/upload-release-action@v2
