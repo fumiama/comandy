@@ -40,6 +40,7 @@ jobs:
         run: |
           echo NDK path is $NDK_HOME
           ls -hl $NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/clang
+          ls -hl /opt/hostedtoolcache
           $NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android23-clang --version
           make -e
 
