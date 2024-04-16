@@ -39,6 +39,7 @@ jobs:
           BUILD_MACHINE: linux
         run: |
           echo NDK path is $NDK_TOOLCHAIN
+          ls $NDK_TOOLCHAIN
           make -e
 
       - name: Build and Run Tests
