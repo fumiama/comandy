@@ -1,0 +1,43 @@
+name: test
+on: [ push, pull_request ]
+
+jobs:
+  test_ubuntu:
+    name: Run Make Test on Ubuntu 🧪
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Build Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc make
+
+      - name: Setup NDK
+        uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r26d
+          add-to-path: false
+
+      - name: Setup Go Environment
+        uses: actions/setup-go@master
+
+      - name: Download Go Modules
+        run: go mod tidy
+
+      - name: Cache Downloaded Modules
+        uses: actions/cache@master
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ matrix.goos }}-${{ matrix.goarch }}-${{ hashFiles('**/go.sum') }}
+
+      - name: Build and Run Tests
+        env:
+          NDK_TOOLCHAIN: ${{ steps.setup-ndk.outputs.ndk-path }}
+          BUILD_MACHINE: linux
+        run: make runtest
