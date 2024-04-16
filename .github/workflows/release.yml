@@ -48,7 +48,7 @@ jobs:
         env:
           NDK_TOOLCHAIN: ${{ steps.setup-ndk.outputs.ndk-path }}
           BUILD_MACHINE: linux
-        run: make
+        run: make -e
 
       - name: Upload Binaries to Release
         uses: svenstaro/upload-release-action@v2

@@ -40,4 +40,4 @@ jobs:
         env:
           NDK_TOOLCHAIN: ${{ steps.setup-ndk.outputs.ndk-path }}
           BUILD_MACHINE: linux
-        run: make runtest
+        run: make -e runtest
