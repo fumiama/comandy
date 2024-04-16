@@ -6,17 +6,21 @@ import (
 	"fmt"
 	"net"
 	"testing"
+	"time"
 
 	"github.com/fumiama/terasu"
 )
 
 func TestResolver(t *testing.T) {
 	t.Log("canUseIPv6:", canUseIPv6.Get())
-	addrs, err := resolver.LookupHost(context.TODO(), "dns.google")
+	addrs, err := resolver.LookupHost(context.TODO(), "api.mangacopy.com")
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Log(addrs)
+	if len(addrs) == 0 {
+		t.Fail()
+	}
 }
 
 func TestDNS(t *testing.T) {
@@ -24,6 +28,39 @@ func TestDNS(t *testing.T) {
 		dotv6servers.test()
 	}
 	dotv4servers.test()
+	for i := 0; i < 100; i++ {
+		addrs, err := resolver.LookupHost(context.TODO(), "api.mangacopy.com")
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Log(addrs)
+		if len(addrs) == 0 {
+			t.Fail()
+		}
+		time.Sleep(time.Millisecond * 50)
+	}
+}
+
+func TestBadDNS(t *testing.T) {
+	if canUseIPv6.Get() {
+		dotv6servers = dnsservers{
+			m: map[string][]*dnsstat{},
+		}
+		dotv6servers.add(map[string][]string{"test.bad.host": {"169.254.122.111"}})
+	} else {
+		dotv4servers = dnsservers{
+			m: map[string][]*dnsstat{},
+		}
+		dotv4servers.add(map[string][]string{"test.bad.host": {"169.254.122.111:853"}})
+	}
+	for i := 0; i < 10; i++ {
+		addrs, err := resolver.LookupHost(context.TODO(), "api.mangacopy.com")
+		t.Log(err)
+		if err == nil && len(addrs) > 0 {
+			t.Fatal("unexpected")
+		}
+		time.Sleep(time.Millisecond * 50)
+	}
 }
 
 func (ds *dnsservers) test() {

@@ -20,6 +20,10 @@ import (
 	"golang.org/x/net/http2"
 )
 
+var (
+	ErrEmptyHostAddress = errors.New("empty host addr")
+)
+
 var httpdialer = net.Dialer{
 	Timeout: time.Minute,
 }
@@ -56,7 +60,7 @@ var cli = comandyClient(http.Client{
 				lookupTable.Set(host, addrs)
 			}
 			if len(addr) == 0 {
-				return nil, errors.New("empty host addr")
+				return nil, ErrEmptyHostAddress
 			}
 			var tlsConn *tls.Conn
 			for _, a := range addrs {

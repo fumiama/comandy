@@ -3,11 +3,16 @@ package main
 import (
 	"context"
 	"crypto/tls"
+	"errors"
 	"net"
 	"sync"
 	"time"
 
 	"github.com/fumiama/terasu"
+)
+
+var (
+	ErrNoDNSAvailable = errors.New("no dns available")
 )
 
 var dnsdialer = net.Dialer{
@@ -51,6 +56,8 @@ func (ds *dnsservers) add(m map[string][]string) {
 }
 
 func (ds *dnsservers) dial(ctx context.Context) (tlsConn *tls.Conn, err error) {
+	err = ErrNoDNSAvailable
+
 	ds.RLock()
 	defer ds.RUnlock()
 
