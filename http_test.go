@@ -13,6 +13,7 @@ func TestClientGet(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	req.Header.Add("user-agent", "COPY/2.1.7")
 	resp, err := (*http.Client)(&cli).Do(req)
 	if err != nil {
 		t.Fatal(err)

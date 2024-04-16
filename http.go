@@ -20,7 +20,7 @@ import (
 	"golang.org/x/net/http2"
 )
 
-var dialer = net.Dialer{
+var httpdialer = net.Dialer{
 	Timeout: time.Minute,
 }
 
@@ -31,15 +31,15 @@ type comandyClient http.Client
 var cli = comandyClient(http.Client{
 	Transport: &http2.Transport{
 		DialTLSContext: func(ctx context.Context, network, addr string, cfg *tls.Config) (net.Conn, error) {
-			if dialer.Timeout != 0 {
+			if httpdialer.Timeout != 0 {
 				var cancel context.CancelFunc
-				ctx, cancel = context.WithTimeout(ctx, dialer.Timeout)
+				ctx, cancel = context.WithTimeout(ctx, httpdialer.Timeout)
 				defer cancel()
 			}
 
-			if !dialer.Deadline.IsZero() {
+			if !httpdialer.Deadline.IsZero() {
 				var cancel context.CancelFunc
-				ctx, cancel = context.WithDeadline(ctx, dialer.Deadline)
+				ctx, cancel = context.WithDeadline(ctx, httpdialer.Deadline)
 				defer cancel()
 			}
 
@@ -65,7 +65,7 @@ var cli = comandyClient(http.Client{
 				} else {
 					a += ":" + port
 				}
-				conn, err := dialer.DialContext(ctx, network, a)
+				conn, err := httpdialer.DialContext(ctx, network, a)
 				if err != nil {
 					continue
 				}

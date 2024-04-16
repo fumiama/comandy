@@ -19,6 +19,9 @@ jobs:
       - name: Setup Go Environment
         uses: actions/setup-go@master
 
+      - name: Run Go Test
+        run: go test $(go list ./...)
+
       - name: Test Build
         env:
           NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}

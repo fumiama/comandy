@@ -5,9 +5,14 @@ import (
 	"crypto/tls"
 	"net"
 	"sync"
+	"time"
 
 	"github.com/fumiama/terasu"
 )
+
+var dnsdialer = net.Dialer{
+	Timeout: time.Second * 8,
+}
 
 type dnsstat struct {
 	A string
@@ -49,15 +54,15 @@ func (ds *dnsservers) dial(ctx context.Context) (tlsConn *tls.Conn, err error) {
 	ds.RLock()
 	defer ds.RUnlock()
 
-	if dialer.Timeout != 0 {
+	if dnsdialer.Timeout != 0 {
 		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, dialer.Timeout)
+		ctx, cancel = context.WithTimeout(ctx, dnsdialer.Timeout)
 		defer cancel()
 	}
 
-	if !dialer.Deadline.IsZero() {
+	if !dnsdialer.Deadline.IsZero() {
 		var cancel context.CancelFunc
-		ctx, cancel = context.WithDeadline(ctx, dialer.Deadline)
+		ctx, cancel = context.WithDeadline(ctx, dnsdialer.Deadline)
 		defer cancel()
 	}
 
@@ -67,7 +72,7 @@ func (ds *dnsservers) dial(ctx context.Context) (tlsConn *tls.Conn, err error) {
 			if !addr.E {
 				continue
 			}
-			conn, err = dialer.DialContext(ctx, "tcp", addr.A)
+			conn, err = dnsdialer.DialContext(ctx, "tcp", addr.A)
 			if err != nil {
 				addr.E = false // no need to acquire write lock
 				continue
