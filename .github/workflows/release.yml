@@ -29,7 +29,7 @@ jobs:
         with:
           ndk-version: r26d
           local-cache: true
-      
+
       - name: Setup Go Environment
         uses: actions/setup-go@master
 
