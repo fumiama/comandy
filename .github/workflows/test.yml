@@ -33,8 +33,5 @@ jobs:
           BUILD_MACHINE: linux
           GOARCH: amd64
         run: |
-          make -e test
-          cd build
-          ls -hl
-          ldd test
-          ./test
+          make -e install
+          make -e runtest

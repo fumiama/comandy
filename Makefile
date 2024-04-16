@@ -10,6 +10,7 @@ BUILD_ARCH := x86_64
 NDK_VERSION := 26.3.11579264
 TARGET_SDK := android23
 TARGET_ARCH := aarch64 # optional: armv7a i686 x86_64
+TEST_INSTALL_PATH := /usr/local/lib
 
 CGO_ENABLED := 1
 GO_SRC := $(shell find . -name '*.go' | grep -v '_test.go$$')
@@ -47,6 +48,9 @@ tidy:
 	go mod tidy
 dir:
 	@if [ ! -d "$(BUILD_PATH)" ]; then mkdir $(BUILD_PATH); fi
+install: test
+	sudo cp $(BUILD_PATH)/lib$(PROJECT_NAME).so $(TEST_INSTALL_PATH)/
+	sudo ldconfig
 clean:
 	@if [ -d "$(BUILD_PATH)" ]; then \
 		rm -rf $(BUILD_PATH)/lib$(PROJECT_NAME).*; \
