@@ -19,14 +19,6 @@ jobs:
       - name: Setup Go Environment
         uses: actions/setup-go@master
 
-      - name: Cache Downloaded Modules
-        uses: actions/cache@master
-        with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ matrix.goos }}-${{ matrix.goarch }}-${{ hashFiles('**/go.sum') }}
-
       - name: Test Build
         env:
           NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
@@ -42,5 +34,7 @@ jobs:
           GOARCH: amd64
         run: |
           make -e test
-          ls build
-          make -e runtest
+          cd build
+          ls -hl
+          ldd test
+          ./test
