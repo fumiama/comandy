@@ -10,11 +10,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Build Tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc make
-
       - name: Setup NDK
         uses: nttld/setup-ndk@v1
         id: setup-ndk
@@ -38,9 +33,6 @@ jobs:
           BUILD_MACHINE: linux
         run: |
           echo NDK path is $NDK_HOME
-          ls -hl $NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/clang
-          ls -hl /opt/hostedtoolcache
-          $NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android23-clang --version
           make -e
 
       - name: Build and Run Tests
@@ -48,4 +40,7 @@ jobs:
           NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
           BUILD_MACHINE: linux
           GOARCH: amd64
-        run: make -e runtest
+        run: |
+          make -e test
+          ls build
+          make -e runtest
