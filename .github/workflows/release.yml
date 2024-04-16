@@ -28,7 +28,7 @@ jobs:
         id: setup-ndk
         with:
           ndk-version: r26d
-          add-to-path: false
+          local-cache: true
       
       - name: Setup Go Environment
         uses: actions/setup-go@master
