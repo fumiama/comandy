@@ -72,8 +72,8 @@ func (ds *dnsservers) dial(ctx context.Context) (tlsConn *tls.Conn, err error) {
 				addr.E = false // no need to acquire write lock
 				continue
 			}
-			tlsConn = terasu.Use(tls.Client(conn, &tls.Config{ServerName: host}))
-			err = tlsConn.HandshakeContext(ctx)
+			tlsConn = tls.Client(conn, &tls.Config{ServerName: host})
+			err = terasu.Use(tlsConn).HandshakeContext(ctx)
 			if err == nil {
 				return
 			}
@@ -86,10 +86,6 @@ func (ds *dnsservers) dial(ctx context.Context) (tlsConn *tls.Conn, err error) {
 
 var dotv6servers = dnsservers{
 	m: map[string][]*dnsstat{
-		"dns.alidns.com": {
-			{"[2400:3200::1]:853", true},
-			{"[2400:3200:baba::1]:853", true},
-		},
 		"dot.sb": {
 			{"[2a09::]:853", true},
 			{"[2a11::]:853", true},
@@ -115,10 +111,6 @@ var dotv6servers = dnsservers{
 
 var dotv4servers = dnsservers{
 	m: map[string][]*dnsstat{
-		"dns.alidns.com": {
-			{"223.5.5.5:853", true},
-			{"223.6.6.6:853", true},
-		},
 		"dot.sb": {
 			{"185.222.222.222:853", true},
 			{"45.11.45.11:853", true},

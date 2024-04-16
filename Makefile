@@ -13,12 +13,12 @@ TARGET_ARCH := aarch64 # optional: armv7a i686 x86_64
 
 CGO_ENABLED := 1
 GO_SRC := $(shell find . -name '*.go' | grep -v '_test.go$$')
-NDK_TOOLCHAIN := ~/Library/Android/sdk/ndk/$(NDK_VERSION)/toolchains/llvm/prebuilt/$(BUILD_MACHINE)-$(BUILD_ARCH)
+NDK_HOME := ~/Library/Android/sdk/ndk/$(NDK_VERSION)
+NDK_TOOLCHAIN := $(NDK_HOME)/toolchains/llvm/prebuilt/$(BUILD_MACHINE)-$(BUILD_ARCH)
 CC := $(NDK_TOOLCHAIN)/bin/$(TARGET_ARCH)-linux-$(TARGET_SDK)-clang
-TEST_OUTPUT = '$(shell cd $(BUILD_PATH) && ./test | head -c 12)'
-TEST_EXPECTED = '{"code":200,'
+TEST_EXPECTED := '{"code":200,'
 
-all: clean
+all:
 	@BUILD_PATH=$(BUILD_PATH)/aarch64 TARGET_ARCH=aarch64 GOARCH=arm64 $(MAKE) -e shared
 	@BUILD_PATH=$(BUILD_PATH)/armv7a TARGET_ARCH=armv7a GOARCH=arm TARGET_SDK=androideabi23 $(MAKE) -e shared
 	@BUILD_PATH=$(BUILD_PATH)/i686 TARGET_ARCH=i686 GOARCH=amd64 $(MAKE) -e shared
@@ -32,11 +32,15 @@ shared: $(GO_SRC) dir tidy
 test: dir
 	@GOOS=$(BUILD_MACHINE) CC=cc NDK_TOOLCHAIN="" $(MAKE) -e shared
 	cc -o $(BUILD_PATH)/test $(BUILD_PATH)/test.c -l$(PROJECT_NAME) -L$(BUILD_PATH)
-runtest: test
-	@if [ $(TEST_OUTPUT) = $(TEST_EXPECTED) ]; then \
+runtest:
+	@if [ ! -f "$(BUILD_PATH)/test" ]; then \
+		$(MAKE) -e test; \
+	fi
+	@TEST_OUTPUT=$$(cd $(BUILD_PATH) && ./test | head -c 12); \
+	if [ $$TEST_OUTPUT = $(TEST_EXPECTED) ]; then \
 		echo "test succeeded."; \
 	else \
-		echo "test failed, expected:" $(TEST_EXPECTED) "but got:" $(TEST_OUTPUT); \
+		echo "test failed, expected:" $(TEST_EXPECTED) "but got:" $$TEST_OUTPUT; \
 	fi
 tidy:
 	go mod tidy

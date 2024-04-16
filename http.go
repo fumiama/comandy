@@ -69,8 +69,8 @@ var cli = comandyClient(http.Client{
 				if err != nil {
 					continue
 				}
-				tlsConn = terasu.Use(tls.Client(conn, cfg))
-				err = tlsConn.HandshakeContext(ctx)
+				tlsConn = tls.Client(conn, cfg)
+				err = terasu.Use(tlsConn).HandshakeContext(ctx)
 				if err == nil {
 					break
 				}
@@ -105,8 +105,14 @@ func (r *capsule) printstrerr(err string) string {
 	return buf.String()
 }
 
-func (cli *comandyClient) request(para string) string {
+func (cli *comandyClient) request(para string) (ret string) {
 	r := capsule{}
+	defer func() {
+		err := recover()
+		if err != nil {
+			ret = r.printstrerr(fmt.Sprint())
+		}
+	}()
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 	go func() {
@@ -147,7 +153,6 @@ func (cli *comandyClient) request(para string) string {
 			return r.printstrerr("unsupported H type " + reflect.ValueOf(x).Type().Name())
 		}
 	}
-	fmt.Println(r.U)
 	wg.Wait()
 	resp, err := (*http.Client)(cli).Do(req)
 	if err != nil {

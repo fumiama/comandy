@@ -28,8 +28,10 @@ func TestClientGet(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	if len(data) == 0 {
+		t.Fail()
+	}
 	t.Log(bytesToString(data))
-	t.Fail()
 }
 
 func TestRequest(t *testing.T) {

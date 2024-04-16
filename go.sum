@@ -4,8 +4,8 @@ github.com/RomiChan/syncx v0.0.0-20221202055724-5f842c53020e h1:wR3MXQ3VbUlPKOOU
 github.com/RomiChan/syncx v0.0.0-20221202055724-5f842c53020e/go.mod h1:vD7Ra3Q9onRtojoY5sMCLQ7JBgjUsrXDnDKyFxqpf9w=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/fumiama/terasu v0.0.0-20240415131749-e65650a52c3c h1:RxkHkeanPDrZrEEcUcosgBULmL8UDkSasvwP+jpdIZQ=
-github.com/fumiama/terasu v0.0.0-20240415131749-e65650a52c3c/go.mod h1:BFl0X1+rGJf8bLHl/kO+v05ryHrj/R4kyCrK89NvegA=
+github.com/fumiama/terasu v0.0.0-20240416061047-62d3c9f6be80 h1:O1JJZzcd5ggUw/9X8V9KxBZ9JZGWFmX/r1q2TPg+pZQ=
+github.com/fumiama/terasu v0.0.0-20240416061047-62d3c9f6be80/go.mod h1:BFl0X1+rGJf8bLHl/kO+v05ryHrj/R4kyCrK89NvegA=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/testify v1.8.0 h1:pSgiaMZlXftHpm5L7V1+rVB+AZJydKsMxsQBIJw4PKk=

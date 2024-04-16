@@ -43,10 +43,10 @@ jobs:
 
       - name: Build Libraries
         env:
-          NDK_TOOLCHAIN: ${{ steps.setup-ndk.outputs.ndk-path }}
+          NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
           BUILD_MACHINE: linux
         run: |
-          echo NDK path is $NDK_TOOLCHAIN
+          echo NDK path is $NDK_HOME
           make -e
 
       - name: Upload Binaries to Release
