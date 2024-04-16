@@ -29,7 +29,7 @@ all:
 	find $(BUILD_PATH) -mindepth 1 -maxdepth 1 -type d -exec mv {}/lib$(PROJECT_NAME).so.gz {}_lib$(PROJECT_NAME).so.gz \;; \
 	cd $(BUILD_PATH) && zip -r -9 $(BUILD_PATH).zip aarch64 armv7a i686 x86_64
 shared: $(GO_SRC) dir tidy
-	GOOS=$(GOOS) GOARCH=$(GOARCH) CGO_ENABLED=$(CGO_ENABLED) NDK_TOOLCHAIN=$(NDK_TOOLCHAIN) CC=$(CC) go build -buildmode=c-shared -o $(BUILD_PATH)/lib$(PROJECT_NAME).so $(GO_SRC)
+	GOOS=$(GOOS) GOARCH=$(GOARCH) CGO_ENABLED=$(CGO_ENABLED) NDK_TOOLCHAIN=$(NDK_TOOLCHAIN) CC=$(CC) go build -buildmode=c-shared -ldflags "-s -w" -trimpath -o $(BUILD_PATH)/lib$(PROJECT_NAME).so $(GO_SRC)
 test: dir
 	@GOOS=$(BUILD_MACHINE) CC=cc NDK_TOOLCHAIN="" $(MAKE) -e shared
 	cc -o $(BUILD_PATH)/test $(BUILD_PATH)/test.c -l$(PROJECT_NAME) -L$(BUILD_PATH)
