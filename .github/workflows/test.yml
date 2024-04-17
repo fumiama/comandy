@@ -28,7 +28,7 @@ jobs:
           BUILD_MACHINE: linux
         run: |
           echo NDK path is $NDK_HOME
-          ll $NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin
+          ls -l $NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin
           make -e
 
       - name: Build and Run Tests
