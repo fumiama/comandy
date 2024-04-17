@@ -42,6 +42,12 @@ func TestDNS(t *testing.T) {
 }
 
 func TestBadDNS(t *testing.T) {
+	dotv6serversbak := dotv6servers.m
+	dotv4serversbak := dotv4servers.m
+	defer func() {
+		dotv6servers.m = dotv6serversbak
+		dotv4servers.m = dotv4serversbak
+	}()
 	if canUseIPv6.Get() {
 		dotv6servers = dnsservers{
 			m: map[string][]*dnsstat{},
