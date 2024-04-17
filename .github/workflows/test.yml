@@ -14,7 +14,7 @@ jobs:
         uses: nttld/setup-ndk@v1
         id: setup-ndk
         with:
-          ndk-version: r26d
+          ndk-version: r16b
 
       - name: Setup Go Environment
         uses: actions/setup-go@master
@@ -28,6 +28,7 @@ jobs:
           BUILD_MACHINE: linux
         run: |
           echo NDK path is $NDK_HOME
+          ll $NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin
           make -e
 
       - name: Build and Run Tests
