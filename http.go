@@ -55,7 +55,10 @@ var cli = comandyClient(http.Client{
 			if len(addrs) == 0 {
 				addrs, err = resolver.LookupHost(ctx, host)
 				if err != nil {
-					return nil, err
+					addrs, err = net.DefaultResolver.LookupHost(ctx, host)
+					if err != nil {
+						return nil, err
+					}
 				}
 				lookupTable.Set(host, addrs)
 			}
@@ -80,7 +83,7 @@ var cli = comandyClient(http.Client{
 				}
 				_ = tlsConn.Close()
 			}
-			return tlsConn, nil
+			return tlsConn, err
 		},
 	},
 })
