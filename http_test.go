@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -44,7 +45,12 @@ func TestRequest(t *testing.T) {
 		t.Fatal(err)
 	}
 	if c.C != http.StatusOK {
-		t.Fatal("status code", c.C)
+		s, err := base64.StdEncoding.DecodeString(c.D)
+		if err != nil {
+			t.Fatal("status code", c.C, "msg:", c.D)
+		} else {
+			t.Fatal("status code", c.C, "msg:", s)
+		}
 	}
 	if len(c.D) == 0 {
 		t.Fatal("empty data")
