@@ -22,11 +22,8 @@ TEST_EXPECTED := '{"code":200,'
 all:
 	@BUILD_PATH=$(BUILD_PATH)/aarch64 TARGET_ARCH=aarch64 GOARCH=arm64 $(MAKE) -e shared
 	@BUILD_PATH=$(BUILD_PATH)/armv7a TARGET_ARCH=armv7a GOARCH=arm GOARM=7 TARGET_SDK=androideabi23 $(MAKE) -e shared
-	@BUILD_PATH=$(BUILD_PATH)/arm TARGET_ARCH=arm GOARCH=arm GOARM=5 TARGET_SDK=androideabi23 $(MAKE) -e shared
 	@BUILD_PATH=$(BUILD_PATH)/i686 TARGET_ARCH=i686 GOARCH=amd64 $(MAKE) -e shared
 	@BUILD_PATH=$(BUILD_PATH)/x86_64 TARGET_ARCH=x86_64 GOARCH=386 $(MAKE) -e shared
-	@BUILD_PATH=$(BUILD_PATH)/mips TARGET_ARCH=mips GOOS=linux GOARCH=mipsel GOMIPS=softfloat $(MAKE) -e shared
-	@BUILD_PATH=$(BUILD_PATH)/mips64 TARGET_ARCH=mips64 GOOS=linux GOARCH=mips64el $(MAKE) -e shared
 	rm -rf $(BUILD_PATH)/*/*.h
 	cd $(BUILD_PATH) && gzip -9 -k aarch64/* armv7a/* i686/* x86_64/*
 	find $(BUILD_PATH) -mindepth 1 -maxdepth 1 -type d -exec mv {}/lib$(PROJECT_NAME).so.gz {}_lib$(PROJECT_NAME).so.gz \;; \

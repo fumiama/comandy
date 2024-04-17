@@ -14,7 +14,7 @@ jobs:
         uses: nttld/setup-ndk@v1
         id: setup-ndk
         with:
-          ndk-version: r16b
+          ndk-version: r26d
 
       - name: Setup Go Environment
         uses: actions/setup-go@master
@@ -28,7 +28,6 @@ jobs:
           BUILD_MACHINE: linux
         run: |
           echo NDK path is $NDK_HOME
-          ls -l $NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/armeabi-v7a-hard
           make -e
 
       - name: Build and Run Tests

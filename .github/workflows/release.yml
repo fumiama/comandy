@@ -22,7 +22,7 @@ jobs:
         uses: nttld/setup-ndk@v1
         id: setup-ndk
         with:
-          ndk-version: r16b
+          ndk-version: r26d
 
       - name: Setup Go Environment
         uses: actions/setup-go@master
