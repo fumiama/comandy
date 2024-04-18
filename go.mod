@@ -2,7 +2,7 @@ module comandy
 
 go 1.22.1
 
-require github.com/fumiama/terasu v0.0.0-20240418160715-5999fcf7db84
+require github.com/fumiama/terasu v0.0.0-20240418161858-1c3273a78268
 
 require (
 	github.com/FloatTech/ttl v0.0.0-20230307105452-d6f7b2b647d1 // indirect
