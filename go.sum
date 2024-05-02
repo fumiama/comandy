@@ -8,6 +8,8 @@ github.com/fumiama/terasu v0.0.0-20240418160715-5999fcf7db84 h1:dQ4GUL1OHOHHlZ0S
 github.com/fumiama/terasu v0.0.0-20240418160715-5999fcf7db84/go.mod h1:afchyfKAb7J/zvaENtYzjIEPVbwiEjJaow05zzT4usM=
 github.com/fumiama/terasu v0.0.0-20240418161858-1c3273a78268 h1:6R8kSGVSIoR3xm2NG8Z4ivkTpAET783RFsJOVKrI7n8=
 github.com/fumiama/terasu v0.0.0-20240418161858-1c3273a78268/go.mod h1:afchyfKAb7J/zvaENtYzjIEPVbwiEjJaow05zzT4usM=
+github.com/fumiama/terasu v0.0.0-20240502091919-c887e26289a8 h1:mVOgOhlrF0ra8/BkwVA71ev/1HkzAgDn8gWU2UNbDU8=
+github.com/fumiama/terasu v0.0.0-20240502091919-c887e26289a8/go.mod h1:UVx8YP1jKKL1Cj+uy+OnQRM2Ih6U36Mqy9GSf7jabsI=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/testify v1.8.0 h1:pSgiaMZlXftHpm5L7V1+rVB+AZJydKsMxsQBIJw4PKk=

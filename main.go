@@ -24,10 +24,10 @@ func add_dns(para *C.char, is_ipv6 C.int) *C.char {
 		if !ip.IsIPv6Available.Get() {
 			return C.CString("cannot use ipv6")
 		}
-		dns.IPv6Servers.Add(m)
+		dns.IPv6Servers.Add(&dns.DNSConfig{Servers: m})
 		return nil
 	}
-	dns.IPv4Servers.Add(m)
+	dns.IPv4Servers.Add(&dns.DNSConfig{Servers: m})
 	return nil
 }
 
