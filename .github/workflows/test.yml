@@ -38,6 +38,7 @@ jobs:
           NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
           BUILD_MACHINE: linux
           GOARCH: amd64
+          GC: go
         run: |
           make -e install
           make -e runtest
