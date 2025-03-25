@@ -32,3 +32,6 @@ test
 *.zip
 *.xz
 *.gz
+
+# Local test stubs
+test.go

@@ -18,6 +18,8 @@ jobs:
 
       - name: Setup Go Environment
         uses: actions/setup-go@master
+        with:
+          go-version: '1.22'
 
       - name: Run Go Test
         run: go test $(go list ./...)
@@ -26,6 +28,7 @@ jobs:
         env:
           NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
           BUILD_MACHINE: linux
+          GC: go
         run: |
           echo NDK path is $NDK_HOME
           make -e
