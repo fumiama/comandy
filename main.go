@@ -4,6 +4,7 @@ import "C"
 
 import (
 	"encoding/json"
+	"sync/atomic"
 
 	"github.com/fumiama/terasu/dns"
 	"github.com/fumiama/terasu/ip"
@@ -44,4 +45,15 @@ func add_dns(para *C.char, is_ipv6 C.int) *C.char {
 //export request
 func request(para *C.char) *C.char {
 	return C.CString(gorequest(C.GoString(para)))
+}
+
+// progress para: url, ret: downloaded
+//
+//export progress
+func progress(para *C.char) C.int {
+	p := pl.Get(C.GoString(para))
+	if p == nil {
+		return 0
+	}
+	return C.int(atomic.LoadUintptr(p))
 }

@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"reflect"
+	"strconv"
 	"strings"
 
 	"github.com/fumiama/terasu/http2"
@@ -83,10 +84,14 @@ func gorequest(para string) (ret string) {
 		return r.printerr(err)
 	}
 	defer resp.Body.Close()
+	szs := resp.Header.Get("Content-Length")
+	sz, _ := strconv.ParseInt(szs, 10, 64)
 	sb := strings.Builder{}
 	enc := base64.NewEncoder(base64.StdEncoding, &sb)
-	_, err = io.Copy(enc, resp.Body)
+	p := newProgressLogger(para, sz)
+	_, err = io.Copy(io.MultiWriter(enc, p), resp.Body)
 	_ = enc.Close()
+	p.remove()
 	if err != nil {
 		return r.printerr(err)
 	}
